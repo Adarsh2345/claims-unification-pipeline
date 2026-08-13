@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Claims Pipeline Run</title>
+    <style>
+        body { font-family: sans-serif; margin: 30px; }
+        table { border-collapse: collapse; margin-top: 10px; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; font-size: 14px; }
+        th { background: #eee; }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+        button { padding: 8px 16px; font-size: 14px; }
+        h2 { margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+    <h1>Claims Pipeline</h1>
+    <button id="runBtn">Run pipeline</button>
+    <span id="status"></span>
+
+    <h2>Stages</h2>
+    <table id="stagesTable">
+        <thead>
+            <tr><th>Stage</th><th>Rows In</th><th>Rows Out</th><th>Dropped</th><th>Notes</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <h2>Acceptance checks</h2>
+    <table id="checksTable">
+        <thead>
+            <tr><th>Check</th><th>Expected</th><th>Actual</th><th>Result</th></tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        const runBtn = document.getElementById("runBtn");
+        const status = document.getElementById("status");
+        const stagesBody = document.querySelector("#stagesTable tbody");
+        const checksBody = document.querySelector("#checksTable tbody");
+
+        async function runPipeline() {
+            status.textContent = " running...";
+            runBtn.disabled = true;
+            stagesBody.innerHTML = "";
+            checksBody.innerHTML = "";
+
+            // 1. start a run
+            const runResp = await fetch("/run", { method: "POST" });
+            const runData = await runResp.json();
+            const runId = runData.run_id;
+
+            // 2. get stages
+            const stagesResp = await fetch(`/run/${runId}/stages`);
+            const stages = await stagesResp.json();
+            for (const s of stages) {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${s.stage}</td>
+                    <td>${s.rows_in}</td>
+                    <td>${s.rows_out}</td>
+                    <td>${s.dropped}</td>
+                    <td>${s.notes}</td>
+                `;
+                stagesBody.appendChild(row);
+            }
+
+            // 3. get validation checks
+            const checksResp = await fetch(`/run/${runId}/validate`);
+            const checks = await checksResp.json();
+            for (const c of checks) {
+                const row = document.createElement("tr");
+                const cls = c.result === "PASS" ? "pass" : "fail";
+                row.innerHTML = `
+                    <td>${c.check}</td>
+                    <td>${c.expected}</td>
+                    <td>${c.actual}</td>
+                    <td class="${cls}">${c.result}</td>
+                `;
+                checksBody.appendChild(row);
+            }
+
+            status.textContent = ` done - run_id: ${runId}`;
+            runBtn.disabled = false;
+        }
+
+        runBtn.addEventListener("click", runPipeline);
+    </script>
+
+</body>
+</html>
