@@ -33,19 +33,20 @@ claims_pipeline_adarsh/
 
 ## 1. Setup
 
-## 1. Clone the repository
+### Clone the repository
 
 ```bash
-git clone [https://github.com/Adarsh2345/claims-unification-pipeline.git](https://github.com/Adarsh2345/claims-unification-pipeline.git)
+git clone https://github.com/Adarsh2345/claims-unification-pipeline.git
 cd claims-unification-pipeline
 
-From the project root:
+```
+### From the project root:
 
 ```
 pip install -r requirements.txt
 ```
 
-Make sure the 4 source files are present in `data/`:
+### Make sure the 4 source files are present in `data/`:
 ```
 source_a_claims.csv.xlsx
 source_b_claims.csv.xlsx
