@@ -33,6 +33,12 @@ claims_pipeline_adarsh/
 
 ## 1. Setup
 
+## 1. Clone the repository
+
+```bash
+git clone [https://github.com/Adarsh2345/claims-unification-pipeline.git](https://github.com/Adarsh2345/claims-unification-pipeline.git)
+cd claims-unification-pipeline
+
 From the project root:
 
 ```
@@ -105,5 +111,14 @@ directly (e.g. `output/stage_6_combined.xlsx`, `output/stage_8_final.xlsx`).
 
 ## Screenshots
 
-See `screenshots/` and `DESIGN_NOTES.md` for the run page and acceptance
-checks output.
+### Application Overview
+![Application Intro](screenshots/intro.png)
+
+### Execution & Run Trigger
+![Pipeline Run](screenshots/run.png)
+
+### Stage Breakdown
+![Stage Breakdown](screenshots/stages.png)
+
+### Acceptance Checks
+![Acceptance Checks](screenshots/checks.png)
